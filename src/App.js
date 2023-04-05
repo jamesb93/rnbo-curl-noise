@@ -27,13 +27,13 @@ export default function App() {
         async function initDevice() {
             const context = new (AudioContext || webkitAudioContext)();
 
+            const gain = context.createGain().connect(context.destination);
+            const newDevice = await createDevice({ context, patcher });
+            
             window.addEventListener('click', () => {
                 context.resume();
             })
-            const gain = context.createGain().connect(context.destination);
-            const newDevice = await createDevice({ context, patcher });
-
-            await fetch(process.env.PUBLIC_URL + '/process1.mp3')
+            await fetch(process.env.PUBLIC_URL + '/process.mp3')
                 .then(response => response.arrayBuffer())
                 .then(buffer => context.decodeAudioData(buffer))
                 .then(audioBuf => newDevice.setDataBuffer('x', audioBuf))
